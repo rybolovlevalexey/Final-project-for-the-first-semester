@@ -26,6 +26,7 @@ namespace Итоговый_проект_за_первый_семестр
             public int value = 0;
             public Btn2048()
             {
+                this.BackColor = Color.LightSteelBlue;
                 this.Enabled = false;
                 this.Width = btn_size;
                 this.Height = btn_size;
@@ -37,9 +38,11 @@ namespace Итоговый_проект_за_первый_семестр
         public Form1()
         {
             InitializeComponent();
-            int first_index = rnd.Next(1, 16), second_index = rnd.Next(1, 16), n = 1;
+            int first_index = rnd.Next(1, 16), second_index = rnd.Next(1, 16), third_index = rnd.Next(1, 16), n = 1;
             while (second_index == first_index)
                 second_index = rnd.Next(1, 16);
+            while (third_index == first_index || third_index == second_index)
+                third_index = rnd.Next(1, 16);
             for (int i = 0; i < 4; i += 1)
             {
                 for (int j = 0; j < 4; j += 1)
@@ -48,9 +51,9 @@ namespace Итоговый_проект_за_первый_семестр
                     btn.Location = new Point(j * btn_size, i * btn_size + 200);
                     this.Controls.Add(btn);
                     field[i, j] = btn;
-                    if (n == first_index || n == second_index)
+                    if (n == first_index || n == second_index || n == third_index)
                     {
-                        btn.value = 128;
+                        btn.value = 2;
                     }
                     n += 1;
                 }
@@ -69,18 +72,103 @@ namespace Итоговый_проект_за_первый_семестр
                         for (int j = 0; j < size; j += 1)
                         {
                             // проход по каждой клетке 
-                            
+                            if (field[i, j].value == 0)
+                                continue;
+                            int ind_i = i, ind_j = j;
+                            while (ind_i > 0 && field[ind_i - 1, ind_j].value == 0)
+                            {
+                                field[ind_i - 1, ind_j].value = field[ind_i, ind_j].value;
+                                field[ind_i, ind_j].value = 0;
+                                ind_i -= 1;
+                            }
+                            if (ind_i <= 0)
+                                continue;
+                            if (field[ind_i - 1, ind_j].value == field[ind_i, ind_j].value)
+                            {
+                                field[ind_i - 1, ind_j].value *= 2;
+                                field[ind_i, ind_j].value = 0;
+                            }
                         }
                     }
+                    check_field();
                     break;
                 case "Down":
-                    MessageBox.Show(arg.KeyCode.ToString());
+                    for (int i = size - 1; i >= 0; i -= 1)
+                    {
+                        for (int j = 0; j < size; j += 1)
+                        {
+                            // проход по каждой клетке 
+                            if (field[i, j].value == 0)
+                                continue;
+                            int ind_i = i, ind_j = j;
+                            while (ind_i + 1 < size && field[ind_i + 1, ind_j].value == 0)
+                            {
+                                field[ind_i + 1, ind_j].value = field[ind_i, ind_j].value;
+                                field[ind_i, ind_j].value = 0;
+                                ind_i += 1;
+                            }
+                            if (ind_i + 1 == size)
+                                continue;
+                            if (field[ind_i + 1, ind_j].value == field[ind_i, ind_j].value)
+                            {
+                                field[ind_i + 1, ind_j].value *= 2;
+                                field[ind_i, ind_j].value = 0;
+                            }
+                        }
+                    }
+                    check_field();
                     break;
                 case "Left":
-                    MessageBox.Show(arg.KeyCode.ToString());
+                    for (int i = 0; i < size; i += 1)
+                    {
+                        for (int j = 0; j < size; j += 1)
+                        {
+                            // проход по каждой клетке 
+                            if (field[i, j].value == 0)
+                                continue;
+                            int ind_i = i, ind_j = j;
+                            while (ind_j - 1 >= 0 && field[ind_i, ind_j - 1].value == 0)
+                            {
+                                field[ind_i, ind_j - 1].value = field[ind_i, ind_j].value;
+                                field[ind_i, ind_j].value = 0;
+                                ind_j -= 1;
+                            }
+                            if (ind_j <= 0)
+                                continue;
+                            if (field[ind_i, ind_j - 1].value == field[ind_i, ind_j].value)
+                            {
+                                field[ind_i, ind_j - 1].value *= 2;
+                                field[ind_i, ind_j].value = 0;
+                            }
+                        }
+                    }
+                    check_field();
                     break;
                 case "Right":
-                    MessageBox.Show(arg.KeyCode.ToString());
+                    for (int i = 0; i < size; i += 1)
+                    {
+                        for (int j = size - 1; j >= 0; j -= 1)
+                        {
+                            // проход по каждой клетке 
+                            if (field[i, j].value == 0)
+                                continue;
+                            int ind_i = i, ind_j = j;
+                            while (ind_j + 1 < size && field[ind_i, ind_j + 1].value == 0)
+                            {
+                                field[ind_i, ind_j + 1].value = field[ind_i, ind_j].value;
+                                field[ind_i, ind_j].value = 0;
+                                ind_j += 1;
+                            }
+                            if (ind_j + 1 == size)
+                                continue;
+                            if (field[ind_i, ind_j + 1].value == field[ind_i, ind_j].value)
+                            {
+                                field[ind_i, ind_j + 1].value *= 2;
+                                field[ind_i, ind_j].value = 0;
+                            }
+                        }
+                    }
+                    check_field();
                     break;
             }
         }
@@ -94,7 +182,18 @@ namespace Итоговый_проект_за_первый_семестр
                     if (field[i, j].value > 0)
                     {
                         field[i, j].Text = field[i, j].value.ToString();
-                        field[i, j].BackColor = colors[field[i, j].value];
+                        try
+                        {
+                            field[i, j].BackColor = colors[field[i, j].value];
+                        }
+                        catch(KeyNotFoundException)
+                        {
+                            MessageBox.Show("Достигнуто предельно возможное число");
+                        }
+                    } else
+                    {
+                        field[i, j].Text = "";
+                        field[i, j].BackColor = Color.LightSteelBlue;
                     }
                 }
             }
