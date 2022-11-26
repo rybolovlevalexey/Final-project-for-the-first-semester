@@ -35,9 +35,9 @@ namespace Итоговый_проект_за_первый_семестр
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 691);
+            this.ClientSize = new System.Drawing.Size(434, 636);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "2048";
             this.ResumeLayout(false);
 
         }
