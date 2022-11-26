@@ -38,11 +38,10 @@ namespace Итоговый_проект_за_первый_семестр
         public Form1()
         {
             InitializeComponent();
-            int first_index = rnd.Next(1, 16), second_index = rnd.Next(1, 16), third_index = rnd.Next(1, 16), n = 1;
+            int first_index = rnd.Next(1, 16), second_index = rnd.Next(1, 16), n = 1;
             while (second_index == first_index)
                 second_index = rnd.Next(1, 16);
-            while (third_index == first_index || third_index == second_index)
-                third_index = rnd.Next(1, 16);
+
             for (int i = 0; i < 4; i += 1)
             {
                 for (int j = 0; j < 4; j += 1)
@@ -51,7 +50,7 @@ namespace Итоговый_проект_за_первый_семестр
                     btn.Location = new Point(j * btn_size, i * btn_size + 200);
                     this.Controls.Add(btn);
                     field[i, j] = btn;
-                    if (n == first_index || n == second_index || n == third_index)
+                    if (n == first_index || n == second_index)
                     {
                         btn.value = 2;
                     }
@@ -171,8 +170,44 @@ namespace Итоговый_проект_за_первый_семестр
                     check_field();
                     break;
             }
+            int new_num_index = rnd.Next(1, 16);
+            bool flag_about_new_index = check_new_index(new_num_index);
+            while (!flag_about_new_index)
+            {
+                new_num_index = rnd.Next(1, 16);
+                flag_about_new_index = check_new_index(new_num_index);
+            }
+            int n = 1;
+            for (int i = 0; i < size; i += 1)
+            {
+                for (int j = 0; j < size; j += 1)
+                {
+                    if (n == new_num_index)
+                    {
+                        if (rnd.Next(1, 5) == 2)
+                            field[i, j].value = 4;
+                        else
+                            field[i, j].value = 2;
+                        break;
+                    }
+                    n += 1;
+                }
+            }
+            check_field();
         }
 
+        // проверка - можно ли на указанное место доавлять новое число
+        private bool check_new_index(int ind)
+        {
+            bool flag = true;
+            int n = 1;
+            for (int i = 0; i < size; i += 1)
+                for (int j = 0; j < size; j += 1)
+                    if (n == ind && field[i, j].value > 0)
+                        flag = false;
+            return flag;
+        }
+        // проверка поля и изменение цвета у клеточек в случае необходимости
         private void check_field()
         {
             for (int i = 0; i < size; i += 1)
